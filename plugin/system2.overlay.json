@@ -1,0 +1,242 @@
+{
+  "name": "data-pipeline",
+  "version": "0.1.0",
+  "description": "System2 overlay for data pipeline engineering with Apache Airflow — ELT/ETL jobs and the scheduling/delivery of labeled datasets for ML experimentation, validation, and evaluation cycles",
+  "schema_version": "1.0.0",
+  "tags": [
+    "data-pipeline",
+    "airflow",
+    "ml-data",
+    "evidence-source"
+  ],
+  "compatibility": {
+    "known_conflicts": [],
+    "tested_with": [],
+    "review_when_combined_with_tags": [
+      "architecture-policy"
+    ]
+  },
+  "contributions": {
+    "orchestrator": {
+      "principles": [
+        {
+          "id": "dp-principle-orchestrate-not-compute",
+          "content_file": "contributions/orchestrator/principle.md"
+        },
+        {
+          "id": "dp-principle-data-aware-over-time-aware",
+          "content_file": "contributions/orchestrator/dp-principle-data-aware.md",
+          "after": "dp-principle-orchestrate-not-compute"
+        },
+        {
+          "id": "dp-principle-govern-the-interface",
+          "content_file": "contributions/orchestrator/dp-principle-govern-interface.md",
+          "after": "dp-principle-data-aware-over-time-aware"
+        }
+      ],
+      "gates": {
+        "1": {
+          "consultation": [
+            {
+              "id": "dp-gate1-consultation",
+              "content_file": "contributions/orchestrator/gate1-consultation.md",
+              "phase": "pre-delegation"
+            }
+          ]
+        },
+        "3": {
+          "consultation": [
+            {
+              "id": "dp-gate3-consultation",
+              "content_file": "contributions/orchestrator/dp-gate3-consultation.md",
+              "phase": "pre-delegation"
+            }
+          ]
+        }
+      }
+    },
+    "delegation": {
+      "advisory_sources": [
+        {
+          "id": "dp-airflow-facts",
+          "name": "Airflow facts",
+          "description": "Authoritative Airflow-3/2.x, asset/dataset/watcher scheduling, and OpenLineage facts the orchestrator can consult inline during delegation. Resolved by orchestrator relay — no tool, MCP server, or permission required.",
+          "resolution": "orchestrator-relay"
+        }
+      ]
+    },
+    "agents": {
+      "design-architect": {
+        "prompt_sections": {
+          "design_constraints": [
+            {
+              "id": "dp-architect-design-constraints",
+              "content_file": "contributions/agents/architect-constraints.md",
+              "inline": false,
+              "summary": "Design DAGs and data deliverables to be idempotent and data-aware by default, scale ceremony to blast radius, keep tool choices advisory, and never attribute re-run safety to Airflow DAG-versioning (it is engineered via idempotency)."
+            }
+          ],
+          "required_output_sections": [
+            {
+              "id": "dp-architect-required-sections",
+              "content_file": "contributions/agents/architect-sections.md",
+              "inline": false,
+              "summary": "For shared, canonical, or production deliverables, require per-deliverable design sections: idempotency/backfill, orchestration-vs-compute boundary, layered data quality, lineage/provenance, and (ML) splits, point-in-time correctness, eval/golden set, and reproducibility."
+            }
+          ]
+        }
+      },
+      "requirements-engineer": {
+        "prompt_sections": {
+          "guardrails": [
+            {
+              "id": "dp-requirements-guardrails",
+              "content_file": "contributions/agents/requirements-guardrails.md",
+              "inline": false,
+              "summary": "Write Airflow requirements in the Airflow-3 idiom with explicit 2.x notes, keep named tools advisory, never claim a tool eliminates a failure mode, default data-quality to native SQL check operators, and prefer open-source options."
+            }
+          ],
+          "required_req_sections": [
+            {
+              "id": "dp-requirements-req-sections",
+              "content_file": "contributions/agents/requirements-sections.md",
+              "inline": false,
+              "summary": "Require idempotency/backfill requirements and, for ML deliverables, split, point-in-time, eval/golden, and versioning requirement sections — tier-scoped to the deliverable's blast radius."
+            }
+          ]
+        }
+      },
+      "executor": {
+        "prompt_sections": {
+          "implementation_discipline": [
+            {
+              "id": "dp-executor-discipline",
+              "content_file": "contributions/agents/executor-discipline.md",
+              "inline": false,
+              "summary": "Implement idempotent tasks (templated intervals, overwrite-by-partition, no blind append), offload heavy compute to engines, use native SQL check operators by default, use the no-execution-date paradigm for non-interval ML DAGs, and do not treat a feature store as a train/serving skew guarantee."
+            }
+          ],
+          "verification_rules": [
+            {
+              "id": "dp-executor-verification",
+              "content_file": "contributions/agents/executor-verification.md",
+              "inline": false,
+              "summary": "After implementing, self-check that no time-dependent or heavy work runs at DAG parse time, that OpenLineage emission is present, and that training joins are point-in-time."
+            }
+          ]
+        }
+      },
+      "test-engineer": {
+        "prompt_sections": {
+          "verification_workflow": [
+            {
+              "id": "dp-test-verification-workflow",
+              "content_file": "contributions/agents/test-engineer-workflow.md",
+              "inline": false,
+              "summary": "Add severity-tagged advisory checks (info/warn/block-candidate) for parse-time hygiene, layered DQ presence, lineage emission, and — for ML — no train/eval leakage, point-in-time joins, and explicitly tested train/serving skew (not assumed from a feature store). Each finding uses the {check_id, severity, location, rationale, fix_hint} shape."
+            }
+          ],
+          "test_authoring_rules": [
+            {
+              "id": "dp-test-authoring-rules",
+              "content_file": "contributions/agents/test-engineer-authoring.md",
+              "inline": false,
+              "summary": "Author tests that assert idempotent re-runs, leak-safe splits, eval-set version and provenance, and dataset reproducibility/identifiability."
+            }
+          ]
+        }
+      },
+      "code-reviewer": {
+        "prompt_sections": {
+          "review_criteria": [
+            {
+              "id": "dp-reviewer-criteria",
+              "content_file": "contributions/agents/reviewer-checklist.md",
+              "inline": false,
+              "summary": "Review for in-task heavy compute, missing provenance/lineage, DAG-versioning-as-replay claims, blanket GE/Soda/dbt data-quality framing, and feature-store-prevents-skew overclaims — each treated as non-conformant."
+            }
+          ],
+          "surface_area_delta": [
+            {
+              "id": "dp-reviewer-surface-area",
+              "content_file": "contributions/agents/reviewer-surface-area.md",
+              "inline": false,
+              "summary": "Track the governance surface a change introduces: new sources of truth versus reuse of canonical datasets, and medallion/semantic-layer layering — tier-scoped to blast radius."
+            }
+          ]
+        }
+      },
+      "security-sentinel": {
+        "prompt_sections": {
+          "threat_model_scope": [
+            {
+              "id": "dp-security-threat-scope",
+              "content_file": "contributions/agents/security-threat-scope.md",
+              "inline": false,
+              "summary": "Add data-pipeline threat dimensions: secrets in DAG code versus a secrets backend, PII leaking into lineage or logs, and untrusted source data at ingestion boundaries."
+            }
+          ]
+        }
+      }
+    },
+    "spec": {
+      "requirements": {
+        "required_sections": [
+          {
+            "id": "dp-req-idempotency-backfill",
+            "section_heading": "Idempotency & Backfill",
+            "description": "State the re-run and backfill strategy: templated execution intervals plus overwrite-by-partition so re-runs are safe. Re-run safety is an engineered property (idempotent, retry-safe tasks), not a consequence of Airflow DAG-versioning."
+          },
+          {
+            "id": "dp-req-compute-boundary",
+            "section_heading": "Orchestration-vs-Compute Boundary",
+            "description": "Define what the DAG coordinates versus what an engine computes: Airflow schedules, validates, and emits lineage; heavy or large-scale compute is pushed to dbt/Spark/the warehouse."
+          },
+          {
+            "id": "dp-req-layered-dq",
+            "section_heading": "Layered Data-Quality",
+            "description": "Define data-quality checks layered through the pipeline rather than one terminal gate. Native SQL check operators are the default approach; third-party frameworks (Great Expectations, Soda, dbt tests) are situational, not blanket requirements."
+          },
+          {
+            "id": "dp-req-lineage-provenance",
+            "section_heading": "Lineage & Provenance",
+            "description": "Require OpenLineage run/dataset emission and an artifact-level provenance stamp (sources, queries, versions) on delivered outputs, without logging raw sensitive payloads."
+          }
+        ]
+      },
+      "design": {
+        "required_sections": [
+          {
+            "id": "dp-design-ml-split-pit",
+            "section_heading": "Split Discipline & Point-in-Time Correctness",
+            "description": "Define train/validation/test (and optional holdout) split discipline and point-in-time correctness of feature/label joins as the core defense against leakage."
+          },
+          {
+            "id": "dp-design-eval-golden",
+            "section_heading": "Eval/Golden-Set Definition",
+            "description": "Define the golden/eval set: its definition, versioning, provenance, and human-review path. Delivery cadence and any registry pattern are advisory and may be marked TBD."
+          },
+          {
+            "id": "dp-design-reproducibility",
+            "section_heading": "Reproducibility & Versioning",
+            "description": "Define how datasets are versioned and reproduced. Candidate tools (e.g., DVC, LakeFS, Delta/Iceberg time-travel) are advisory open-source options, none mandated; an optional model/dataset registry link is TBD."
+          },
+          {
+            "id": "dp-design-skew-leakage",
+            "section_heading": "Leakage & Skew Test Plan",
+            "description": "Define an explicit test plan for leakage and train/serving skew. Skew must be tested; a feature store is noted as an aid for consistency, never as a guarantee that prevents skew."
+          }
+        ]
+      }
+    },
+    "auxiliary_agents": [
+      {
+        "name": "dp-pipeline-scout",
+        "role": "Optional read-only fact-gatherer for Airflow, asset/dataset scheduling, and OpenLineage facts. Returns compact structured summaries; advisory only; never blocks; cannot spawn subagents.",
+        "pipeline": false,
+        "delegation_policy": "orchestrator_optional",
+        "agent_file": "agents/dp-pipeline-scout.md"
+      }
+    ]
+  }
+}

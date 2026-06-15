@@ -1,0 +1,62 @@
+{
+  "version": "1.0.0",
+  "boundaries": [
+    {
+      "module": "plugin/system2.overlay.json",
+      "description": "Overlay manifest. References only in-overlay content files via relative paths (no '..', no absolute). Conforms to the host schema; never redefines host semantics (Conformist).",
+      "allowed_imports_from": [
+        "plugin/contributions/",
+        "plugin/agents/"
+      ],
+      "forbidden_imports_from": [
+        "../System2/",
+        "tests/",
+        "spec/",
+        "research/"
+      ]
+    },
+    {
+      "module": "plugin/contributions/orchestrator/",
+      "description": "Principle and gate-consultation markdown. Plain markdown, no frontmatter. Domain guidance only; must not re-teach System2 mechanics (REQ-DP-008).",
+      "allowed_imports_from": [],
+      "forbidden_imports_from": [
+        "plugin/contributions/agents/",
+        "plugin/agents/",
+        "../System2/"
+      ]
+    },
+    {
+      "module": "plugin/contributions/agents/",
+      "description": "Per-(agent,anchor) prompt-section markdown. Plain markdown, no frontmatter. Each file is self-contained guidance for one anchor; C1 (pipeline-engineering) and C2 (ML-data) language kept distinct per file.",
+      "allowed_imports_from": [],
+      "forbidden_imports_from": [
+        "plugin/contributions/orchestrator/",
+        "plugin/agents/",
+        "../System2/"
+      ]
+    },
+    {
+      "module": "plugin/agents/",
+      "description": "Auxiliary agent definitions (markdown + YAML frontmatter). Read-only, advisory, pipeline:false. Must not reference content files or host internals.",
+      "allowed_imports_from": [],
+      "forbidden_imports_from": [
+        "plugin/contributions/",
+        "../System2/",
+        "spec/"
+      ]
+    },
+    {
+      "module": "tests/",
+      "description": "Smoke tests. May read the manifest, content files, and the host schema/anchor-map/composer (read-only, for validation). The only module permitted to reference the host.",
+      "allowed_imports_from": [
+        "plugin/",
+        "../System2/plugin/schemas/",
+        "../System2/plugin/scripts/"
+      ],
+      "forbidden_imports_from": [
+        "spec/",
+        "research/"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "version": "1.0.0",
+  "modules": {
+    "plugin/system2.overlay.json": {
+      "description": "Overlay manifest. Its public surface is the set of contribution IDs and their declared targets, consumed by the System2 composer. Conforms to System2 overlay.schema.json (schema_version 1.0.0).",
+      "public_exports": [
+        { "name": "dp-principle-orchestrate-not-compute", "kind": "constant", "signature": "orchestrator.principles[]: { id, content_file, inline:true }" },
+        { "name": "dp-principle-data-aware-over-time-aware", "kind": "constant", "signature": "orchestrator.principles[]: { id, content_file, inline:true }" },
+        { "name": "dp-principle-govern-the-interface", "kind": "constant", "signature": "orchestrator.principles[]: { id, content_file, inline:true }" },
+        { "name": "dp-gate1-consultation", "kind": "constant", "signature": "orchestrator.gates.1.consultation[]: { id, content_file, phase:pre-delegation }" },
+        { "name": "dp-gate3-consultation", "kind": "constant", "signature": "orchestrator.gates.3.consultation[]: { id, content_file, phase:pre-delegation }" },
+        { "name": "dp-architect-design-constraints", "kind": "constant", "signature": "agents.design-architect.prompt_sections.design_constraints[]: { id, content_file, inline:false, summary }" },
+        { "name": "dp-architect-required-sections", "kind": "constant", "signature": "agents.design-architect.prompt_sections.required_output_sections[]: { id, content_file, inline:false, summary }" },
+        { "name": "dp-requirements-guardrails", "kind": "constant", "signature": "agents.requirements-engineer.prompt_sections.guardrails[]: { id, content_file, inline:false, summary }" },
+        { "name": "dp-requirements-req-sections", "kind": "constant", "signature": "agents.requirements-engineer.prompt_sections.required_req_sections[]: { id, content_file, inline:false, summary }" },
+        { "name": "dp-executor-discipline", "kind": "constant", "signature": "agents.executor.prompt_sections.implementation_discipline[]: { id, content_file, inline:false, summary }" },
+        { "name": "dp-executor-verification", "kind": "constant", "signature": "agents.executor.prompt_sections.verification_rules[]: { id, content_file, inline:false, summary }" },
+        { "name": "dp-test-verification-workflow", "kind": "constant", "signature": "agents.test-engineer.prompt_sections.verification_workflow[]: { id, content_file, inline:false, summary }" },
+        { "name": "dp-test-authoring-rules", "kind": "constant", "signature": "agents.test-engineer.prompt_sections.test_authoring_rules[]: { id, content_file, inline:false, summary }" },
+        { "name": "dp-reviewer-criteria", "kind": "constant", "signature": "agents.code-reviewer.prompt_sections.review_criteria[]: { id, content_file, inline:false, summary }" },
+        { "name": "dp-reviewer-surface-area", "kind": "constant", "signature": "agents.code-reviewer.prompt_sections.surface_area_delta[]: { id, content_file, inline:false, summary }" },
+        { "name": "dp-security-threat-scope", "kind": "constant", "signature": "agents.security-sentinel.prompt_sections.threat_model_scope[]: { id, content_file, inline:false, summary }" },
+        { "name": "dp-req-idempotency-backfill", "kind": "constant", "signature": "spec.requirements.required_sections[]: { id, section_heading:'Idempotency & Backfill', description }" },
+        { "name": "dp-req-compute-boundary", "kind": "constant", "signature": "spec.requirements.required_sections[]: { id, section_heading:'Orchestration-vs-Compute Boundary', description }" },
+        { "name": "dp-req-layered-dq", "kind": "constant", "signature": "spec.requirements.required_sections[]: { id, section_heading:'Layered Data-Quality', description }" },
+        { "name": "dp-req-lineage-provenance", "kind": "constant", "signature": "spec.requirements.required_sections[]: { id, section_heading:'Lineage & Provenance', description }" },
+        { "name": "dp-design-ml-split-pit", "kind": "constant", "signature": "spec.design.required_sections[]: { id, section_heading:'Split Discipline & Point-in-Time Correctness', description }" },
+        { "name": "dp-design-eval-golden", "kind": "constant", "signature": "spec.design.required_sections[]: { id, section_heading:'Eval/Golden-Set Definition', description }" },
+        { "name": "dp-design-reproducibility", "kind": "constant", "signature": "spec.design.required_sections[]: { id, section_heading:'Reproducibility & Versioning', description }" },
+        { "name": "dp-design-skew-leakage", "kind": "constant", "signature": "spec.design.required_sections[]: { id, section_heading:'Leakage & Skew Test Plan', description }" },
+        { "name": "dp-airflow-facts", "kind": "constant", "signature": "delegation.advisory_sources[]: { id, name, description, resolution:'orchestrator-relay' }" }
+      ],
+      "internal_only": [
+        "contribution content-file bodies (markdown; read by host via summary/file-pointer, not a stable API)"
+      ]
+    },
+    "plugin/agents/dp-pipeline-scout.md": {
+      "description": "Optional auxiliary agent definition (markdown + YAML frontmatter). Read-only fact-gatherer for Airflow/asset/lineage facts. Not a pipeline agent; cannot spawn subagents; advisory only.",
+      "public_exports": [
+        { "name": "dp-pipeline-scout", "kind": "constant", "signature": "auxiliary_agents[]: { name:'dp-pipeline-scout', role, pipeline:false, delegation_policy:'orchestrator_optional', agent_file }" }
+      ],
+      "internal_only": [
+        "Operating Rules", "Advisory Constraint"
+      ]
+    },
+    "tests/test_compose_smoke.py": {
+      "description": "Stdlib smoke test mirroring the template's, validating manifest, dp- IDs, summaries, anchors, dry-run compose, and injection scan. Total-anchor and all-13-agent coverage assertions relaxed (overlay targets 6 agents by design).",
+      "public_exports": [
+        { "name": "EXPECTED_CONTRIBUTION_IDS", "kind": "constant", "signature": "set[str] of 26 dp- contribution IDs" }
+      ],
+      "internal_only": [
+        "test functions", "_load_manifest", "_load_schema_and_anchor_map"
+      ]
+    }
+  }
+}

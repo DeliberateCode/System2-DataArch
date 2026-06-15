@@ -1,0 +1,34 @@
+{
+  "name": "DeliberateCode-System2-DataArch",
+  "owner": {
+    "name": "DeliberateCode",
+    "url": "https://github.com/DeliberateCode"
+  },
+  "metadata": {
+    "description": "System2 overlay for data pipeline engineering with Apache Airflow (ELT/ETL + labeled-data delivery for ML cycles)"
+  },
+  "plugins": [
+    {
+      "name": "data-pipeline",
+      "version": "0.1.0",
+      "source": "./plugin",
+      "description": "System2 overlay for data pipeline engineering with Apache Airflow: ELT/ETL jobs and the scheduling/delivery of labeled datasets for ML experimentation, validation, and evaluation cycles.",
+      "author": {
+        "name": "DeliberateCode"
+      },
+      "homepage": "https://github.com/DeliberateCode/System2-DataArch",
+      "repository": "https://github.com/DeliberateCode/System2-DataArch",
+      "license": "MIT",
+      "keywords": [
+        "data-pipeline",
+        "airflow",
+        "etl",
+        "elt",
+        "mlops",
+        "data-engineering",
+        "system2"
+      ],
+      "category": "workflow"
+    }
+  ]
+}
