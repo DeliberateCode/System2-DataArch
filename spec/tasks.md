@@ -2,7 +2,13 @@
 
 > System2 Gate-4 artifact. Derived from the APPROVED `spec/design.md` (Gate-3, 26 contributions),
 > `spec/requirements.md` (41 EARS reqs), `spec/context.md` (Gate-1), and the companion artifacts
-> `spec/interfaces.json` / `spec/module-boundaries.json`. **Status: ready for execution.**
+> `spec/interfaces.json` / `spec/module-boundaries.json`. **Status: execution complete — ready
+> for testing.** Build groups G1–G5 are done: the manifest declares all 26 `dp-` contributions,
+> every referenced content file is authored and non-empty, template residue is removed, and the
+> retargeted compose smoke suite is green (14/14) against a local `../System2`. The remaining
+> phase is **G6 validation** (TASK-032..037: dry-run compose review, negative-content scan,
+> reference-DAG/-deliverable exercises, blast-radius + version-note + gate review) — tracked by
+> the unchecked items in the Acceptance Checklist below.
 >
 > Scope reminder: the "system" being built is **the overlay itself** — an additive, advisory
 > content+manifest artifact composed into a System2 host. No runtime. Every task preserves the
