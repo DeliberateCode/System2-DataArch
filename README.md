@@ -57,9 +57,67 @@ research/                # Best-practice research notes that drove the concept d
 
 ## Prerequisites
 
-This is an overlay — it patches an existing System2 installation.
+This is an overlay — it composes domain guidance into an existing **System2**
+installation; it is not a standalone plugin. Install System2 first (in Claude Code):
 
 ```
 /plugin marketplace add DeliberateCode/System2
 /plugin install system2@system2-marketplace
 ```
+
+The first command only registers the System2 marketplace catalog; the second installs
+the plugin (the `/system2:init`, `/system2:compose`, and `/system2:doctor` commands).
+Restart Claude Code afterward, then run `/system2:init` in your project to write the base
+orchestrator `CLAUDE.md`.
+
+## Installation
+
+The overlay is pure content + manifest — additive and advisory only, with no MCP servers,
+hooks, or permissions. "Installing" it means **composing** it into your project with
+System2's composer; there is no package or CLI to install.
+
+### Step 1: Get the overlay
+
+Clone this repo somewhere on your machine:
+
+```
+git clone https://github.com/DeliberateCode/System2-DataArch.git
+```
+
+The overlay directory to compose is the repo's **`plugin/`** subdirectory (the one
+containing `system2.overlay.json`).
+
+### Step 2: Preview the composition (dry-run)
+
+From within your target project in Claude Code, preview without writing any files:
+
+```
+/system2:compose --dry-run /path/to/System2-DataArch/plugin
+```
+
+Review the report: it should show the `data-pipeline` overlay applying **26 `dp-`
+contributions** with no structural conflicts and no removed base capability.
+
+### Step 3: Apply
+
+After reviewing the preview, compose for real:
+
+```
+/system2:compose /path/to/System2-DataArch/plugin
+```
+
+This injects the data-pipeline guidance into System2's pipeline agents and writes the
+project-local artifacts:
+
+- `CLAUDE.md` — base System2 instructions **plus** the overlay-contributed sections
+- `.system2/overlays/data-pipeline/` — local copies of the overlay content
+- `.claude/agents/dp-pipeline-scout.md` — the read-only auxiliary fact-gatherer agent
+- `spec/overlay-manifest.lock` — versions, hashes, and the applied contributions
+
+Composition is additive: it never removes base System2 capability. To remove the overlay
+later, run `/system2:compose --uninstall data-pipeline`.
+
+> **Pre-1.0 / ready for testing.** The overlay composes cleanly and the smoke suite is
+> green, but Gate-6 validation is still in progress (see the status note above). Prefer a
+> scratch or non-critical project while validation closes, and always review the
+> `--dry-run` preview before applying.
